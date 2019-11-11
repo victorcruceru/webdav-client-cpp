@@ -22,11 +22,6 @@
 
 cmake_minimum_required(VERSION 3.4)
 
-include("cmake/HunterGate.cmake")
-huntergate(
-  URL "https://github.com/ruslo/hunter/archive/v0.23.83.tar.gz"
-  SHA1 "12dec078717539eb7b03e6d2a17797cba9be9ba9"
-)
 
 set(WDC_VERSION_MAJOR 1)
 set(WDC_VERSION_MINOR 1)
@@ -43,15 +38,10 @@ option(BUILD_TESTS "Build tests" OFF)
 option(BUILD_EXAMPLES "Build Examples" OFF)
 option(WDC_VERBOSE "Print verbose information" OFF)
 
-hunter_add_package(Boost)
-hunter_add_package(OpenSSL)
-hunter_add_package(CURL)
-hunter_add_package(pugixml)
-
-find_package(Boost CONFIG REQUIRED)
+find_package(Boost REQUIRED)
 find_package(OpenSSL REQUIRED)
-find_package(CURL CONFIG REQUIRED)
-find_package(pugixml CONFIG REQUIRED)
+find_package(CURL REQUIRED)
+find_package(pugixml REQUIRED)
 
 file(GLOB WDC_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/sources/*.cpp")
 
@@ -115,9 +105,7 @@ install(EXPORT "${TARGETS_EXPORT_NAME}"
 )
 
 if(BUILD_TESTS)
-  hunter_add_package(Boost COMPONENTS system filesystem)
   find_package(Boost CONFIG REQUIRED system filesystem)
-  hunter_add_package(Catch)
   find_package(Catch2 CONFIG REQUIRED)
 
   enable_testing()
