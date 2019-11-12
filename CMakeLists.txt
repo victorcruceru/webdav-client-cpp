@@ -105,14 +105,14 @@ install(EXPORT "${TARGETS_EXPORT_NAME}"
 )
 
 if(BUILD_TESTS)
-  find_package(Boost CONFIG REQUIRED system filesystem)
-  find_package(Catch2 CONFIG REQUIRED)
+  find_package(Boost REQUIRED system filesystem)
+  find_package(Catch2 REQUIRED)
 
   enable_testing()
 
   file(GLOB ${PROJECT_NAME}_TEST_SOURCES tests/*.cpp)
   add_executable(check ${${PROJECT_NAME}_TEST_SOURCES})
-  target_link_libraries(check libwdc Catch2::Catch Boost::filesystem Boost::system)
+  target_link_libraries(check libwdc Catch2::Catch2 Boost::filesystem Boost::system)
 
   if(${CMAKE_BUILD_TYPE} MATCHES "Coverage")
     set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/")

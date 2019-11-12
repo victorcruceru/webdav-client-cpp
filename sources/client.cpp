@@ -342,7 +342,7 @@ namespace WebDAV
     Header header =
     {
       "Accept: */*",
-      "Depth: 0",
+      "Depth: 1",
       "Content-Type: text/xml"
     };
 
@@ -351,11 +351,15 @@ namespace WebDAV
     propfind.append_attribute("xmlns:D") = "DAV:";
 
     auto prop = propfind.append_child("D:prop");
-    prop.append_child("D:quokta-available-bytes");
+    prop.append_child("D:quota-available-bytes");
     prop.append_child("D:quota-used-bytes");
 
     auto document_print = pugi::node_to_string(document);
     size_t size = document_print.length() * sizeof((document_print.c_str())[0]);
+
+#ifdef WDC_VERBOSE
+    document.save(std::cout);
+#endif      
 
     Data data = { nullptr, 0, 0 };
 
@@ -376,6 +380,9 @@ namespace WebDAV
     if (!is_performed) return 0;
 
     document.load_buffer(data.buffer, static_cast<size_t>(data.size));
+#ifdef WDC_VERBOSE
+    document.save(std::cout);
+#endif    
 
     pugi::xml_node multistatus = document.select_node("*[local-name()='multistatus']").node();
     pugi::xml_node response = multistatus.select_node("*[local-name()='response']").node();
