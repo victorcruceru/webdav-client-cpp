@@ -461,16 +461,36 @@ namespace WebDAV
 #endif
     auto multistatus = document.select_node("*[local-name()='multistatus']").node();
     auto responses = multistatus.select_nodes("*[local-name()='response']");
+
+    auto target_path_without_sep = target_urn.path();
+    if (!target_path_without_sep.empty() and 
+        target_path_without_sep.back() == '/'){
+      target_path_without_sep.resize(target_path_without_sep.length() - 1);
+    }
+    
+#ifdef WDC_VERBOSE
+    std::cout << "DEBUG: target_path_without_sep is = '" 
+              << target_path_without_sep <<"'\n";
+#endif    
+
     for (auto response : responses)
     {
       pugi::xml_node href = response.node().select_node("*[local-name()='href']").node();
       std::string encode_file_name = href.first_child().value();
-      std::string resource_path = curl_unescape(encode_file_name.c_str(), static_cast<int>(encode_file_name.length()));
-      auto target_path = target_urn.path();
-      auto target_path_without_sep = target_urn.path();
-      if (!target_path_without_sep.empty() && target_path_without_sep.back() == '/')
-        target_path_without_sep.resize(target_path_without_sep.length() - 1);
-      auto resource_path_without_sep = std::string(resource_path, 0, resource_path.rfind('/') + 1);
+      std::string resource_path_without_sep = 
+         curl_unescape(encode_file_name.c_str(), 
+                       static_cast<int>(encode_file_name.length()));
+
+    if (!resource_path_without_sep.empty() and 
+        resource_path_without_sep.back() == '/'){
+      resource_path_without_sep.resize(resource_path_without_sep.length() - 1);
+    }
+
+#ifdef WDC_VERBOSE
+      std::cout << "DEBUG: resource_path_without_sep is = '" 
+              << resource_path_without_sep <<"'\n";
+#endif    
+
       if (resource_path_without_sep == target_path_without_sep)
       {
         auto propstat = response.node().select_node("*[local-name()='propstat']").node();
@@ -480,6 +500,7 @@ namespace WebDAV
         auto content_length = prop.select_node("*[local-name()='getcontentlength']").node();
         auto modified_date = prop.select_node("*[local-name()='getlastmodified']").node();
         auto resource_type = prop.select_node("*[local-name()='resourcetype']").node();
+        auto content_type = prop.select_node("*[local-name()='getcontenttype']").node();
 
         dict_t information =
         {
@@ -487,6 +508,7 @@ namespace WebDAV
           { "name", display_name.first_child().value() },
           { "size", content_length.first_child().value() },
           { "modified", modified_date.first_child().value() },
+          { "content_type", content_type.first_child().value() },
           { "type", resource_type.first_child().name() }
         };
 
