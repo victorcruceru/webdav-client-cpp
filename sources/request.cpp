@@ -70,14 +70,14 @@ namespace WebDAV
     }
 
     this->set(CURLOPT_URL, const_cast<char*>(webdav_hostname.c_str()));
-    this->set(CURLOPT_HTTPAUTH, static_cast<int>(CURLAUTH_BASIC));
+    this->set(CURLOPT_HTTPAUTH, static_cast<int>(CURLAUTH_ANY));
     auto token = webdav_username + ":" + webdav_password;
     this->set(CURLOPT_USERPWD, const_cast<char*>(token.c_str()));
 
     if (!this->proxy_enabled()) return;
 
     this->set(CURLOPT_PROXY, const_cast<char*>(proxy_hostname.c_str()));
-    this->set(CURLOPT_PROXYAUTH, static_cast<int>(CURLAUTH_BASIC));
+    this->set(CURLOPT_PROXYAUTH, static_cast<int>(CURLAUTH_ANY));
 
     if (proxy_username.empty()) return;
 

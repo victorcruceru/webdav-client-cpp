@@ -53,7 +53,7 @@ namespace fixture
     boost::uuids::random_generator gen;
     boost::uuids::uuid id = gen();
     auto ciid = to_string(id);
-    return ciid + file_ext;;
+    return ciid + file_ext;
   }
 
   auto get_dir_name() -> std::string
@@ -87,7 +87,7 @@ namespace fixture
     std::map<std::string, std::string> options =
     {
       {"webdav_hostname", hostname_ptr},
-      {"webdav_username",    username_ptr},
+      {"webdav_username", username_ptr},
       {"webdav_password", password_ptr}
     };
 

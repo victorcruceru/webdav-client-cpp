@@ -112,7 +112,7 @@ if(BUILD_TESTS)
 
   file(GLOB ${PROJECT_NAME}_TEST_SOURCES tests/*.cpp)
   add_executable(check ${${PROJECT_NAME}_TEST_SOURCES})
-  target_link_libraries(check libwdc Catch2::Catch2 Boost::filesystem Boost::system)
+  target_link_libraries(check libwdc Catch2::Catch2 Boost::filesystem Boost::system pthread)
 
   if(${CMAKE_BUILD_TYPE} MATCHES "Coverage")
     set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/")
@@ -136,7 +136,7 @@ if(BUILD_EXAMPLES)
     get_filename_component(EXAMPLE_NAME ${EXAMPLE_SOURCE} NAME_WE)
     set(EXAMPLE_TARGET_NAME example_${EXAMPLE_NAME})
     add_executable(${EXAMPLE_TARGET_NAME} ${EXAMPLE_SOURCE})
-    target_link_libraries(${EXAMPLE_TARGET_NAME} libwdc)
+    target_link_libraries(${EXAMPLE_TARGET_NAME} libwdc pthread)
     set_target_properties(${EXAMPLE_TARGET_NAME} PROPERTIES OUTPUT_NAME ${EXAMPLE_NAME})
     install(TARGETS ${EXAMPLE_TARGET_NAME}
             RUNTIME DESTINATION bin
