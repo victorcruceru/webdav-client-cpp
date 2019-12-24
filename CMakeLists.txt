@@ -106,13 +106,12 @@ install(EXPORT "${TARGETS_EXPORT_NAME}"
 
 if(BUILD_TESTS)
   find_package(Boost REQUIRED system filesystem)
-  find_package(Catch2 REQUIRED)
 
   enable_testing()
-
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-psabi")
   file(GLOB ${PROJECT_NAME}_TEST_SOURCES tests/*.cpp)
   add_executable(check ${${PROJECT_NAME}_TEST_SOURCES})
-  target_link_libraries(check libwdc Catch2::Catch2 Boost::filesystem Boost::system pthread)
+  target_link_libraries(check libwdc Boost::filesystem Boost::system pthread)
 
   if(${CMAKE_BUILD_TYPE} MATCHES "Coverage")
     set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/")
@@ -121,7 +120,7 @@ if(BUILD_TESTS)
     set(CMAKE_CXX_FLAGS "-g -O0 -Wall -fprofile-arcs -ftest-coverage")
     set(LCOV_REMOVE_EXTRA "'tests/*'")
     add_executable(unit_tests ${${PROJECT_NAME}_SOURCES} ${${PROJECT_NAME}_TEST_SOURCES})
-    target_link_libraries(unit_tests Catch2::Catch Boost::filesystem Boost::system libwdc OpenSSL::SSL OpenSSL::Crypto CURL::libcurl pugixml)
+    target_link_libraries(unit_tests Boost::filesystem Boost::system libwdc OpenSSL::SSL OpenSSL::Crypto CURL::libcurl pugixml)
 
     setup_target_for_coverage(unit_tests_coverage unit_tests coverage)
   else()
